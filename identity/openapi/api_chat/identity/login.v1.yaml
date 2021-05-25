@@ -8,7 +8,7 @@ paths:
   /register:
     post:
       summary: Create New User
-      operationId: post-user
+      operationId: auth.register
       description: Create a new user.
       responses:
         '200':
@@ -38,7 +38,7 @@ paths:
   /login:
     post:
       summary: ''
-      operationId: post-login
+      operationId: auth.login
       responses:
         '200':
           description: OK

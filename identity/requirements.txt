@@ -1,0 +1,8 @@
+connexion[swagger-ui]
+
+pyjwt
+flask
+jsonschema
+connexion
+gunicorn
+prance
