@@ -1,22 +1,9 @@
-version:"1"
+version: "3"
 services:
     identity:
-    image: identity:latest
-    tty: true
-    stdin_open: true
-    ports: 
-        - "8081:8081"
-    # environment:
-    #     DATABASE_HOST: db
-    #     DATABASE_USER: root
-    #     DATABASE_PASS: ${DB_PWD}
-    #     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-    #     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-    #     AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
-    #     IDENTITY_APIKEY: "${IDENTITY_APIKEY}"
-    # depends_on: 
-    #     - db
-    restart: always
-    #command: /bin/sh
-    # volumes:
-    #     - ./identity/openapi/api_chat/identity
+        image: identity:latest
+        tty: true
+        stdin_open: true
+        ports: 
+            - "8081:8081"
+        restart: always
