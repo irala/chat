@@ -25,22 +25,6 @@
               v-model="register.password"
             />
 
-            <!-- <div class="text-muted font-italic">
-              <small
-                >password strength:
-                <span class="text-success font-weight-700">strong</span></small
-              >
-            </div> -->
-
-            <!-- <div class="row my-4">
-              <div class="col-12">
-                <base-checkbox class="custom-control-alternative">
-                  <span class="text-muted"
-                    >I agree with the <a href="#!">Privacy Policy</a></span
-                  >
-                </base-checkbox>
-              </div>
-            </div> -->
             <div class="text-center">
               <base-button type="primary" class="my-4" @click="newRegister"
                 >Create account</base-button
@@ -65,6 +49,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "register",
   data() {
@@ -81,7 +66,25 @@ export default {
       //comprobar que la contraseña contiene numeros, mayusculas, minusculas y mas de 6 caracteres
       //comprobar que no existe ya el usuario
       //si es asi todo se graba en base de datos
-    }
+      const path = "/identity/register";
+      console.log(path);
+      axios
+        .post(path,{username:this.register.username, password:this.register.password})
+        .then((res) => {
+          let result=res;
+          console.log(result.data);
+          console.log("dentro")
+          //redirigir a app
+            let to = { name: "dashboard" };
+          this.$router.push(to);
+
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+  
   }
 };
 </script>

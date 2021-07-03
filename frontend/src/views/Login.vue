@@ -11,7 +11,7 @@
               class="form-control mb-3"
               placeholder="Username"
               addon-left-icon="ni ni-email-83"
-              v-model="model.email"
+              v-model="login.username"
             />
 
             <input
@@ -19,12 +19,10 @@
               placeholder="Password"
               type="password"
               addon-left-icon="ni ni-lock-circle-open"
-              v-model="model.password"
+              v-model="login.password"
             />
 
-            <!-- <base-checkbox class="custom-control-alternative"> -->
-              <!-- <span class="text-muted">Remember me</span> -->
-            <!-- </base-checkbox> -->
+          
             <div class="text-center">
               <base-button type="primary" class="my-4" @click="validateLogin">Sign in</base-button>
             </div>
@@ -33,7 +31,7 @@
       </div>
       <div class="row mt-3">
         <div class="col-6">
-          <a href="#" class="text-light"><small>Forgot password?</small></a>
+          <!-- <a href="#" class="text-light"><small>Forgot password?</small></a> -->
         </div>
         <div class="col-6 text-right">
           <router-link to="/register" class="text-light"
@@ -45,23 +43,37 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "login",
   data() {
     return {
-       
-      model: {
-        email: "",
+      login: {
+        username: "",
         password: "",
       },
     };
   },
   methods:{
-    //validar login
     validateLogin(){
-    console.log("email "+this.model.email+", password "+ this.model.password);
-    //validar si el usuario existe en base de datos y si es asi enviar al dashboard
-    },
+      //comprobar que existe ya el usuario
+      const path = "/identity/login";
+      console.log(path);
+      axios
+        .post(path,{username:this.login.username, password:this.login.password})
+        .then((res) => {
+          let result=res;
+          console.log(result.data);
+          console.log("login")
+          //redirigir a app
+          let to = { name: "dashboard" };
+          this.$router.push(to);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  
   }
 };
 </script>

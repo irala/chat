@@ -9,6 +9,7 @@ from typing import Any, Dict
 import connexion
 import prance
 
+
 def get_bundled_specs(main_file: Path) -> Dict[str, Any]:
     parser = prance.ResolvingParser(
         str(main_file.absolute()), lazy=False, backend="openapi-spec-validator"
@@ -33,7 +34,6 @@ if __name__ == "__main__" or __name__ == "identity":
             )
         ),
     )
-    # CORS(app.app)
 
     # only run manually if main, don't do it if running from gunicorn
     if __name__ == "__main__":
