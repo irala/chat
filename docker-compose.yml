@@ -9,10 +9,18 @@ services:
         volumes:
           - ./api/db_schemas:/docker-entrypoint-initdb.d
         environment:
-          MYSQL_ROOT_PASSWORD: ${DB_PWD}
+          MYSQL_ROOT_PASSWORD: example
         security_opt:
         - seccomp:unconfined
     
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8087:8087
+        command: docker-php-entrypoint php -S [::]:8087 -t /var/www/html    
+
+
     identity:
         image: identity:latest
         tty: true
@@ -22,3 +30,7 @@ services:
         restart: always
         depends_on: 
             - db
+
+# networks:
+#     internalNetwork:
+#         external: false
