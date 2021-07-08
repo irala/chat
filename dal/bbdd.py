@@ -1,32 +1,51 @@
-import datetime
-import json
-import traceback
 from pprint import pprint
 
-import mysql.connector
-from mysql.connector import Error
-from mysql.connector import errorcode
-
-silent = True
-conf = {}
+import pymysql
+from pymysql.err import DatabaseError
 
 
 class bbdd():
+    def __init__(self):
+        self.connection = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='example',
+            db='chat'
+        )
 
-	def get_db_conn(self):
-		db_conn = mysql.connector.connect(
-			host=self.conf["DATABASE_HOST"],
-			user=self.conf["DATABASE_USER"],
-			passwd=self.conf["DATABASE_PASS"],
-			database= self.current_database,#"prot",
-			use_pure=True,
-			use_unicode=True, 
-			charset='utf8mb4'
-		)
-		return db_conn
+        self.cursor = self.connection.cursor()
 
-    def createUser():
-        pass
+        print("Conexion bien")
 
-    def readUser():
-        pass
+    def readUser(self, id):
+        sql = 'SELECT id,username, password FROM user_account WHERE ID ={}'.format(
+            id)
+
+        try:
+            self.cursor.execute(sql)
+            user = self.cursor.fetchone()
+
+            print("id:", user[0])
+            print("username:", user[1])
+            print("password:", user[2])
+
+        except Exception as e:
+            raise
+
+	
+    def createUser(self, username, password):	
+        try:
+			self.cursor.execute('INSERT INTO user_account VALUES(%s, %s)',(username, password) )
+			self.connection.commit()
+
+			print('new user inserted')
+
+        except Exception as e:
+            raise
+
+    def close(self):
+        self.connection.close()
+
+
+database = bbdd()
+database.createUser("pepito", "hola")
