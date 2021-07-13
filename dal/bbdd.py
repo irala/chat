@@ -1,7 +1,11 @@
 from pprint import pprint
 
+
 import pymysql
 from pymysql.err import DatabaseError
+from pymysql.cursors import DictCursor
+import bcrypt
+
 
 
 class bbdd():
@@ -12,12 +16,11 @@ class bbdd():
             password='example',
             db='chat'
         )
-
-        self.cursor = self.connection.cursor()
-
-        print("Conexion bien")
+        self.cursor = self.connection.cursor(DictCursor)
 
 
+
+    #CRUD
     def getAll(self):
         try:
             self.cursor.execute("SELECT * FROM user_account")
@@ -25,35 +28,39 @@ class bbdd():
             self.connection.commit()
 
             for user in users:
-                print("username "+ user[1]+ " password "+user[2])
+                print("user "+ user.get("username") + " password "+user.get("password"))
 
         except Exception as e:
             raise
 
-    def readUser(self, id):
-        sql = 'SELECT id,username, password FROM user_account WHERE ID ={}'.format(
-            id)
-
+    def readUser(self, username, password):
+        sql = "SELECT id,username, password FROM user_account WHERE USERNAME = '"+ username +"'"       
+      
         try:
             self.cursor.execute(sql)
             user = self.cursor.fetchone()
             self.connection.commit()
-
-            print("id:", user[0])
-            print("username:", user[1])
-            print("password:", user[2])
+            if not user :
+                print("not exists")
+            else:
+                to_check_pwd = user.get("password")
+                if not bcrypt.checkpw(password.encode("utf-8"), to_check_pwd.encode("utf-8")):
+                    print("pass error")
+                else:
+                    print("correct")        
 
         except Exception as e:
             raise
 
 	
     def createUser(self,id,username, password):	
+
         try:
 
             with self.connection.cursor() as cur:
-
+                passBcrypt=bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
                 cur.execute('INSERT INTO user_account VALUES(%s, %s, %s)', 
-                (id,username,password)) 
+                (id,username,passBcrypt)) 
                 self.connection.commit()
 
                 print('new user inserted')
@@ -64,7 +71,8 @@ class bbdd():
     
     def deleteUser(self, username):
         try:
-            sql="DELETE FROM user_account WHERE USERNAME = '"+ username + "'"
+            sql=f"DELETE FROM user_account WHERE USERNAME = {username} "
+
             print(sql)
 
             self.cursor.execute(sql)
@@ -80,6 +88,7 @@ class bbdd():
 
 database = bbdd()
 database.getAll()
-#database.readUser(1)
-#database.createUser(1,'prueba', '1234')
+database.readUser("cosa","cosapa") 
+
+#database.createUser(5,'cosa', 'cosapass')
 #database.deleteUser('pepito')
