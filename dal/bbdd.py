@@ -19,6 +19,11 @@ class bbdd():
         self.cursor = self.connection.cursor(DictCursor)
 
 
+    def checkPassword(to_check_pwd,password):
+        if not bcrypt.checkpw(password.encode("utf-8"), to_check_pwd.encode("utf-8")):
+            return "404"
+        else:
+            return "200"
 
     #CRUD
     def getAll(self):
@@ -31,26 +36,21 @@ class bbdd():
                 print("user "+ user.get("username") + " password "+user.get("password"))
 
         except Exception as e:
-            raise
+            return "400"
 
     def readUser(self, username, password):
-        sql = "SELECT id,username, password FROM user_account WHERE USERNAME = '"+ username +"'"       
       
         try:
-            self.cursor.execute(sql)
+            self.cursor.execute(f"SELECT id,username, password FROM user_account WHERE USERNAME ={username}")
             user = self.cursor.fetchone()
             self.connection.commit()
             if not user :
-                print("not exists")
+                return "404"
             else:
-                to_check_pwd = user.get("password")
-                if not bcrypt.checkpw(password.encode("utf-8"), to_check_pwd.encode("utf-8")):
-                    print("pass error")
-                else:
-                    print("correct")        
+                self.checkPassword(user.get("password"), password)        
 
         except Exception as e:
-            raise
+            return "400"
 
 	
     def createUser(self,id,username, password):	
@@ -67,20 +67,17 @@ class bbdd():
 
         except Exception as e:
             print('error'+ str(e))
+            return "400"
 
     
     def deleteUser(self, username):
         try:
-            sql=f"DELETE FROM user_account WHERE USERNAME = {username} "
-
-            print(sql)
-
-            self.cursor.execute(sql)
+            self.cursor.execute(f"DELETE FROM user_account WHERE USERNAME = {username}")
             self.connection.commit()
             
             print('delete user: '+ username)
         except Exception as e:
-            raise
+            return "400"
 
     def close(self):
         self.connection.close()
