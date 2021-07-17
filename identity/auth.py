@@ -3,6 +3,7 @@ import time
 import connexion
 import six
 from werkzeug.exceptions import Unauthorized
+from dal import bbdd
 
 from jose import JWTError, jwt
 
@@ -10,6 +11,8 @@ from jose import JWTError, jwt
 JWT_SECRET = 'secret'
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
+
+_bbdd = bbdd.bbdd()
 
 
 def _current_timestamp() -> int:
@@ -43,6 +46,7 @@ def get_secret(user, token_info) -> str:
 def login(body):
     print("login")
     #TODO: comprobamos su existencia en bbdd y generamos token
+    _bbdd.signIn(body["username"],body["password"])
     result=generate_token(body["username"])  
     #TODO: si no está enviar mensaje
     return {"username":body["username"], "token": result},200
@@ -50,6 +54,7 @@ def login(body):
 def register(body):
     print("register")
     #TODO:antes de registrar en bbdd comprobar que existe
+    _bbdd.signUp(1,body["username"],body["password"])
     # si no está creado se registra en bbdd
     # si existe generamos el token unicamente 
     result=generate_token(body["username"])  
