@@ -22,8 +22,6 @@ paths:
                     type: string
                   username:
                     type: string
-        '201':
-          description: Created
         '400':
           description: Bad Request
       requestBody:

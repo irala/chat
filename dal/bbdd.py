@@ -37,7 +37,7 @@ class bbdd():
         to_check_pwd=user.get("password")
         print(to_check_pwd , "--", password)
         if not bcrypt.checkpw(password.encode("utf-8"), to_check_pwd.encode("utf-8")):
-            return "incorrect password",404
+            return "incorrect password",401
         else:
             return "Ok",200
 
@@ -49,10 +49,10 @@ class bbdd():
             user = self.cursor.fetchone()
             self.connection.commit()
             if not user :
-                return "",404
+                return "",401
             
-            self.checkPassword(user, password)     
-           
+            return user,200 # self.checkPassword(user, password)     
+            
 
         except Exception as e:
             return "error",400
@@ -82,10 +82,10 @@ class bbdd():
             
             print('delete user: '+ username)
         except Exception as e:
-            return "400"
+            return "error",400
 
     def signUp(self, username, password):
-        user=self.readUser(username,password)
+        user = self.readUser(username,password)
         print("respuesta", user)
         if user == "":
             print("not user")
@@ -96,11 +96,18 @@ class bbdd():
 
 
     def signIn(self, username, password):
-        user=self.readUser(username,password)
-        if not user:
-            return ""
-        else:
-            return user
+        msg, code =self.readUser(username,password)
+        if code > 299:
+            print(code)
+            return code
+        
+        result, codeCheck =self.checkPassword(msg, password)
+        if codeCheck > 299:
+            print(result)
+            return result
+        
+        print(result +":" +username)
+        return username
 
     def close(self):
         self.connection.close()
@@ -110,10 +117,12 @@ database = bbdd()
 
 # database.getAll()
 
-# database.signIn("cosa","cosapass") 
-# database.signIn("cosa","123") 
+database.signIn("cosa","cosapass") 
+database.signIn("cosa","123") 
+database.signIn("prueba","mil")
+
 
 # database.signUp("prueba","mil")
-database.signUp("prueba","123") 
+# database.signUp("prueba","123") 
 
 #database.deleteUser('pepito')
