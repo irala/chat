@@ -5,7 +5,7 @@ import pymysql
 from pymysql.err import DatabaseError
 from pymysql.cursors import DictCursor
 import bcrypt
-
+import uuid
 
 
 class bbdd():
@@ -58,21 +58,21 @@ class bbdd():
             return "error",400
 
 	
-    def createUser(self,id,username, password):	
+    def createUser(self,username, password):	
 
         try:
 
             with self.connection.cursor() as cur:
                 passBcrypt=bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-                cur.execute('INSERT INTO user_account VALUES(%s, %s, %s)', 
-                (id,username,passBcrypt)) 
+                uuid_ = uuid.uuid4().hex
+                cur.execute('INSERT INTO user_account (id,username,password) VALUES(%s,%s, %s)', 
+                (uuid_,username,passBcrypt)) 
                 self.connection.commit()
-
-                return "new user inserted",200
+                return username,"new user inserted",200
 
         except Exception as e:
             print('error'+ str(e))
-            return "error",400
+            return "","error",400
 
     
     def deleteUser(self, username):
@@ -85,14 +85,18 @@ class bbdd():
             return "error",400
 
     def signUp(self, username, password):
-        user = self.readUser(username,password)
-        print("respuesta", user)
-        if user == "":
-            print("not user")
-            newUser=self.createUser(8,username,password)
-            return newUser
-        else:
-            return user
+        msg, code = self.readUser(username,password)
+        if code > 299:
+            print("new user --->")
+            newUsername, msgNewUser,codeNewUser=self.createUser(username,password)
+            if codeNewUser >299:
+                print("error",msgNewUser)
+                
+            print("created ", newUsername)
+            return newUsername,200
+        
+        print("username already user")
+        return "username already user",401
 
 
     def signIn(self, username, password):
@@ -115,14 +119,14 @@ class bbdd():
 
 database = bbdd()
 
-# database.getAll()
+database.getAll()
 
-database.signIn("cosa","cosapass") 
-database.signIn("cosa","123") 
-database.signIn("prueba","mil")
+# database.signIn("cosa","cosapass") 
+# database.signIn("cosa","123") 
+# database.signIn("prueba","mil")
 
-
-# database.signUp("prueba","mil")
-# database.signUp("prueba","123") 
+database.signUp("cosa","cosapass") 
+database.signUp("prueba","mil")
+database.signUp("carlos","bonito") 
 
 #database.deleteUser('pepito')
