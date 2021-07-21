@@ -7,13 +7,14 @@ from pymysql.cursors import DictCursor
 import bcrypt
 import uuid
 
-
+conf={}
 class bbdd():
-    def __init__(self):
+    def __init__(self,conf=conf):
+        self.conf = conf
         self.connection = pymysql.connect(
-            host='db',
-            user='root',
-            password='example',
+            host=self.conf["DATABASE_HOST"],
+            user=self.conf["DATABASE_USER"],
+            password=self.conf["DATABASE_PASS"],
             db='chat'
         )
         self.cursor = self.connection.cursor(DictCursor)
