@@ -3,7 +3,7 @@ import time
 import connexion
 import six
 from werkzeug.exceptions import Unauthorized
-from dal import bbdd
+from bbdd import bbdd
 
 from jose import JWTError, jwt
 
@@ -12,20 +12,20 @@ JWT_SECRET = 'secret'
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
 
-_bbdd = bbdd.bbdd()
+_bbdd = bbdd()
 
 
 def _current_timestamp() -> int:
     return int(time.time())
 
-def generate_token(username):
+def generate_token(additional_payload):
     timestamp = _current_timestamp()
     payload = {
         #"iss": JWT_ISSUER,
         "iat": int(timestamp),
         "exp": int(timestamp + JWT_LIFETIME_SECONDS),
-        "sub": str(username),
     }
+    payload={**payload,**additional_payload}
 
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
@@ -43,24 +43,34 @@ def get_secret(user, token_info) -> str:
     '''.format(user=user, token_info=token_info)
 
 
-def login(body):
+def signIn(body):
     print("login")
-    #TODO: comprobamos su existencia en bbdd y generamos token
-    _bbdd.signIn(body["username"],body["password"])
-    result=generate_token(body["username"])  
-    #TODO: si no está enviar mensaje
-    return {"username":body["username"], "token": result},200
+    msg,code=_bbdd.signIn(body["username"],body["password"])
+    if code >299:
+        return msg,code
+    access_token=generate_token({
+    "sub":msg.get("user_id"),
+    "user_id":msg.get("user_id"),
+    "username":body["username"]
+    }
+    )  
+    msg["access_token"]=access_token
+    return msg,200
 
-def register(body):
+def signUp(body):
     print("register")
-    #TODO:antes de registrar en bbdd comprobar que existe
-    _bbdd.signUp(1,body["username"],body["password"])
-    # si no está creado se registra en bbdd
-    # si existe generamos el token unicamente 
-    result=generate_token(body["username"])  
-
-    print(result)
-    return {"username":body["username"], "token": result},200
+    msg,code=_bbdd.signUp(body["username"],body["password"])
+    if code >299:
+        return msg,code
+    access_token=generate_token({
+        "sub":msg.get("user_id"),
+        "user_id":msg.get("user_id"),
+        "username":body["username"]
+        }
+        )  
+    print(access_token)
+    msg["access_token"]=access_token
+    return msg,200
 
 
 

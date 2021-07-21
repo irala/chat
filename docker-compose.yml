@@ -30,6 +30,11 @@ services:
         restart: always
         depends_on: 
             - db
+        environment: 
+            DATABASE_HOST: db
+            DATABASE_USER: root
+            DATABASE_PASS: example
+
 
 # networks:
 #     internalNetwork:

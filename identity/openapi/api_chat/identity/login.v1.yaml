@@ -8,7 +8,7 @@ paths:
   /register:
     post:
       summary: Create New User
-      operationId: auth.register
+      operationId: auth.signUp
       description: Create a new user.
       responses:
         '200':
@@ -18,9 +18,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
+                  access_token:
                     type: string
                   username:
+                    type: string
+                  id:
                     type: string
         '400':
           description: Bad Request
@@ -41,7 +43,7 @@ paths:
   /login:
     post:
       summary: ''
-      operationId: auth.login
+      operationId: auth.signIn
       responses:
         '200':
           description: OK
@@ -50,7 +52,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
+                  access_token:
                     type: string
                   username:
                     type: string
@@ -75,6 +77,7 @@ paths:
           in: header
           name: Authorization
           description: Basic
+      description: ''
 components:
   schemas:
     User:
