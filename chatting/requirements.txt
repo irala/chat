@@ -1,0 +1,12 @@
+connexion[swagger-ui]
+
+pyjwt
+flask
+jsonschema
+connexion
+gunicorn
+prance
+python-jose[cryptography]
+six>=1.9
+pymysql
+bcrypt

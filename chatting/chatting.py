@@ -17,9 +17,9 @@ def get_bundled_specs(main_file: Path) -> Dict[str, Any]:
     parser.parse()
     return parser.specification
 
-print(f"{'identity'} starting..." )
+print(f"{'chatting'} starting..." )
 
-if __name__ == "__main__" or __name__ == "identity":
+if __name__ == "__main__" or __name__ == "chatting":
 
     options = {"swagger_ui": False}
     app = connexion.App(
@@ -30,7 +30,7 @@ if __name__ == "__main__" or __name__ == "identity":
     app.add_api(
         get_bundled_specs(
             Path(
-                "openapi/identity_chat/identity/login.v1.yaml"
+                "openapi/api_chat/chat/chat.v1.yaml"
             )
         ),
     )
