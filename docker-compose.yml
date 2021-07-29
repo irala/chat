@@ -35,19 +35,19 @@ services:
             DATABASE_USER: root
             DATABASE_PASS: example
 
-    chatting:
-        image: chatting:latest
-        tty: true
-        stdin_open: true
-        ports: 
-            - "8083:8083"
-        restart: always
-        depends_on: 
-            - db
-        environment: 
-            DATABASE_HOST: db
-            DATABASE_USER: root
-            DATABASE_PASS: example
+    # chatting:
+    #     image: chatting:latest
+    #     tty: true
+    #     stdin_open: true
+    #     ports: 
+    #         - "8083:8083"
+    #     restart: always
+    #     depends_on: 
+    #         - db
+    #     environment: 
+    #         DATABASE_HOST: db
+    #         DATABASE_USER: root
+    #         DATABASE_PASS: example
 
 
 # networks:

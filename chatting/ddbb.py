@@ -4,7 +4,6 @@ from pprint import pprint
 import pymysql
 from pymysql.err import DatabaseError
 from pymysql.cursors import DictCursor
-import bcrypt
 import uuid
 from datetime import date
 
@@ -37,7 +36,7 @@ class ddbb():
 
     def getMsg(self,username):
         try:
-            self.cursor.execute('SELECT id, from, to, msg, creation_date FROM messaging WHERE USERNAME =%s',username)
+            self.cursor.execute('SELECT id, from, to, msg, creation_date FROM messaging WHERE to =%s',username)
             msg = self.cursor.fetchone()
             self.connection.commit()
             if not msg :

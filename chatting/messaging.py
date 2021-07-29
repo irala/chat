@@ -6,6 +6,7 @@ from ddbb import ddbb
 
 
 _ddbb= ddbb()
+
 def getMsg(username):
     msg, code= _ddbb.setMsg(username)
     if code >299:
