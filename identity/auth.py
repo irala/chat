@@ -7,10 +7,12 @@ from bbdd import bbdd
 
 from jose import JWTError, jwt
 
+import state
 #JWT_ISSUER = 'com.zalando.connexion'
-JWT_SECRET = 'secret'
+JWT_SECRET = state.conf.get("JWT_PASS",'secret')
 JWT_LIFETIME_SECONDS = 600
 JWT_ALGORITHM = 'HS256'
+
 
 _bbdd = bbdd()
 

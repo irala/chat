@@ -7,15 +7,14 @@ from pymysql.cursors import DictCursor
 import uuid
 from datetime import date
 
+import state
 
-conf={}
-class ddbb():
-    def __init__(self,conf=conf):
-        self.conf = conf
+class bbdd():
+    def __init__(self):
         self.connection = pymysql.connect(
-            host=self.conf["DATABASE_HOST"],
-            user=self.conf["DATABASE_USER"],
-            password=self.conf["DATABASE_PASS"],
+            host=state.conf["DATABASE_HOST"],
+            user=state.conf["DATABASE_USER"],
+            password=state.conf["DATABASE_PASS"],
             db='chat'
         )
         self.cursor = self.connection.cursor(DictCursor)
@@ -54,4 +53,3 @@ class ddbb():
         self.connection.close()
 
 
-database = ddbb()

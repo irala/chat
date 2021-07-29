@@ -6,15 +6,13 @@ from pymysql.err import DatabaseError
 from pymysql.cursors import DictCursor
 import bcrypt
 import uuid
-
-conf={}
+import state
 class bbdd():
-    def __init__(self,conf=conf):
-        self.conf = conf
+    def __init__(self,):
         self.connection = pymysql.connect(
-            host=self.conf["DATABASE_HOST"],
-            user=self.conf["DATABASE_USER"],
-            password=self.conf["DATABASE_PASS"],
+            host=state.conf["DATABASE_HOST"],
+            user=state.conf["DATABASE_USER"],
+            password=state.conf["DATABASE_PASS"],
             db='chat'
         )
         self.cursor = self.connection.cursor(DictCursor)

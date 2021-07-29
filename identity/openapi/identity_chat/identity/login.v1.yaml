@@ -5,38 +5,11 @@ info:
 servers:
   - url: 'http://localhost:8081'
 paths:
-  '/messages/{userid}':
+  /register:
     post:
       summary: Create New User
-      operationId: messaging.send_message
-      description: Creates a new message for the given userid.
-      responses:
-        '204':
-          description: No Content
-        '400':
-          description: Bad Request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  minLength: 1
-                  maxLength: 255
-              required:
-                - message
-    parameters:
-      - schema:
-          type: string
-        name: userid
-        in: path
-        required: true
-  /messages:
-    get:
-      summary: Your GET endpoint
-      tags: []
+      operationId: auth.signUp
+      description: Create a new user.
       responses:
         '200':
           description: OK
@@ -45,26 +18,66 @@ paths:
               schema:
                 type: object
                 properties:
-                  items:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        message:
-                          type: string
-                        sender_id:
-                          type: string
-                        timestamp:
-                          type: integer
-                      required:
-                        - message
-                        - sender_id
-                        - timestamp
+                  access_token:
+                    type: string
+                  username:
+                    type: string
+                  id:
+                    type: string
         '400':
           description: Bad Request
-      operationId: messaging.get_messages
-      description: 'Reads all messages received, even the sent by us.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
     parameters: []
+  /login:
+    post:
+      summary: ''
+      operationId: auth.signIn
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  username:
+                    type: string
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Basic
+      description: ''
 components:
   schemas:
     User:
@@ -108,12 +121,3 @@ components:
         - lastName
         - email
         - emailVerified
-  securitySchemes:
-    jwt:
-      type: http
-      scheme: bearer
-      description: ''
-      bearerFormat: JWT
-      x-bearerInfoFunc: messaging.check_token
-security:
-  - jwt: []
