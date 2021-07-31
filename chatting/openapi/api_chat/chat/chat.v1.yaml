@@ -5,7 +5,7 @@ info:
 servers:
   - url: 'http://localhost:8081'
 paths:
-  '/messages/{userid}':
+  '/messages/{destinataryid}':
     post:
       summary: Create New User
       operationId: messaging.send_message
@@ -30,7 +30,7 @@ paths:
     parameters:
       - schema:
           type: string
-        name: userid
+        name: destinataryid
         in: path
         required: true
   /messages:

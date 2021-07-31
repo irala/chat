@@ -10,16 +10,28 @@ db = bbdd()
 
 def get_messages(token_info):
     user_id = token_info.get("sub")
+    msg,code =db.getMsg(user_id)
+    if code > 299:
+        return msg,code
+    return msg, 200
 
 
-def send_message(body, userid, token_info):
+
+
+def send_message(body,destinataryid, token_info):
     user_id = token_info.get("sub")
+    msg,code=db.setMsg(user_id,destinataryid,body)
+    if code > 299:
+        return msg,code
+    return msg , 200
 
     
 def check_token(token):
-    utf8token = token.encode("utf-8")
+    utf8token = token
     data = None
     try:
+        print(utf8token, state.conf["JWT_PASS"] )
+
         data = jwt.decode(jwt=utf8token, key=state.conf["JWT_PASS"], algorithms=["HS256"])
     except jwt.exceptions.InvalidSignatureError as e:
         print( "Invalid signature token", str(e))
@@ -37,4 +49,4 @@ def check_token(token):
         print( f"Other token error: {str(e)}")
         six.raise_from( Unauthorized,e )
         return None
-    return 
+    return data

@@ -10,7 +10,7 @@ from jose import JWTError, jwt
 import state
 #JWT_ISSUER = 'com.zalando.connexion'
 JWT_SECRET = state.conf.get("JWT_PASS",'secret')
-JWT_LIFETIME_SECONDS = 600
+JWT_LIFETIME_SECONDS = 60*60*24
 JWT_ALGORITHM = 'HS256'
 
 
@@ -28,7 +28,7 @@ def generate_token(additional_payload):
         "exp": int(timestamp + JWT_LIFETIME_SECONDS),
     }
     payload={**payload,**additional_payload}
-
+    print(payload, JWT_SECRET, JWT_ALGORITHM )
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 
